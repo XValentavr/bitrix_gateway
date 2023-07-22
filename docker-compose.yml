@@ -1,0 +1,30 @@
+version: "3.5"
+
+services:
+  sale-capital-api:
+    build: .
+    command:  bash -c "python app.py run -h 0.0.0.0"
+    restart: always
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/app
+    env_file:
+      - ".env"
+    networks:
+      - sale-capital
+
+  ngrok:
+    image: shkoliar/ngrok:latest
+    ports:
+      - "4551:4551"
+    env_file:
+      - ".env.docker"
+    environment:
+      - DOMAIN=sale-capital-api
+      - PORT=5001
+    networks:
+      - sale-capital
+networks:
+  sale-capital:
+    driver: bridge
